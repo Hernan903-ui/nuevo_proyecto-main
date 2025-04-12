@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="/js/reports.js" defer></script>
+    <img src="image.jpg" alt="Descripción" loading="lazy">
+</head>
+<body>
+    <header>
+        <h1 data-i18n="header.title">Welcome to the Dashboard</h1>
+        <p data-i18n="content.greeting">Hello, User!</p>
+        <h1>Reportes de Ventas</h1>
+        <nav>
+            <a href="/dashboard.html">Volver al Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Productos Más Vendidos</h2>
+        <canvas id="mostSoldChart"></canvas>
+
+        <h2>Productos Más Rentables</h2>
+        <canvas id="mostProfitableChart"></canvas>
+    </main>
+</body>
+</html>
