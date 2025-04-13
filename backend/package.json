@@ -4,17 +4,9 @@
     "description": "Backend del proyecto",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
-        "dev": "nodemon index.js"
+      "start": "node index.js"
     },
     "dependencies": {
-        "body-parser": "^1.20.2",
-        "cors": "^2.8.5",
-        "express": "^4.18.2"
-    },
-    "devDependencies": {
-        "nodemon": "^3.1.9"
-    },
-    "author": "Hernan903-ui",
-    "license": "MIT"
-}
+      "express": "^5.1.0"
+    }
+  }

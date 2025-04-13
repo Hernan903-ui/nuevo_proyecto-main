@@ -1,39 +1,37 @@
-
+networks:
+  app_network:
 
 services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
     volumes:
       - ./backend:/app
-      - /app/node_modules
+    ports:
+      - "3000:3000"
     depends_on:
       - db
+    networks:
+      - app_network
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html
     ports:
       - "8080:80"
+    networks:
+      - app_network
 
   db:
-    image: mysql:8
-    restart: always
+    image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-    ports:
-      - "3307:3307"
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
     volumes:
-      - db_data:/var/lib/mysql
-
-volumes:
-  db_data:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - app_network

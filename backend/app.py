@@ -37,12 +37,14 @@ from backend.routes.product_routes import product_bp
 from backend.routes.stock_routes import stock_bp
 from backend.routes.report_routes import report_bp
 from backend.routes.pos_routes import pos_bp
+from routes.register import register_bp
 
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(product_bp, url_prefix='/products')
 app.register_blueprint(stock_bp, url_prefix='/stock')
 app.register_blueprint(report_bp, url_prefix='/reports')
 app.register_blueprint(pos_bp, url_prefix='/pos')
+app.register_blueprint(register_bp, url_prefix='/register')
 
 @app.route('/')
 def index():

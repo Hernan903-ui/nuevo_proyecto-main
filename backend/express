@@ -1,0 +1,17 @@
+const express = require('express');
+const app = express();
+const path = require('path');
+
+// Servir archivos estáticos desde 'frontend/public'
+app.use(express.static(path.join(__dirname, '../frontend/public')));
+
+// Ruta para el archivo HTML
+app.get('/register.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/public/register.html'));
+});
+
+// Puerto donde se ejecuta el servidor
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
