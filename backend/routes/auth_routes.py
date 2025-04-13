@@ -93,3 +93,20 @@ def login_user():
 @role_required('admin')  # Solo los administradores pueden acceder a esta ruta
 def admin_only():
     return jsonify({"message": "Bienvenido, administrador"})
+
+@auth_bp.route('/register', methods=['POST'])
+def register_user():
+    data = request.json
+    hashed_password = generate_password_hash(data['password'], method='sha256')
+    try:
+        new_user = User(
+            name=data['name'],
+            email=data['email'],
+            business_name=data['business_name'],
+            password=hashed_password
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "Usuario registrado con éxito"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400

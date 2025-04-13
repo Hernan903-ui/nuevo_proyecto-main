@@ -6,9 +6,10 @@ from flask_socketio import SocketIO
 from backend.utils.mail import init_mail
 from backend.extensions import db  # Mover la inicialización de db a un archivo separado
 from backend.database import init_database
+from flask import Flask, send_from_directory
 
 # Configuración de Flask
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/public')
 
 # Configuración de la base de datos
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:hjb38u30@localhost/inventory_db'
@@ -42,6 +43,14 @@ app.register_blueprint(product_bp, url_prefix='/products')
 app.register_blueprint(stock_bp, url_prefix='/stock')
 app.register_blueprint(report_bp, url_prefix='/reports')
 app.register_blueprint(pos_bp, url_prefix='/pos')
+
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(app.static_folder, path)
 
 # Iniciar servidor
 if __name__ == '__main__':
