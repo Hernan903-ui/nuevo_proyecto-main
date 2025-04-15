@@ -1,6 +1,24 @@
 // pos.js
+import config from './config.js';
 
 let productsInCart = [];
+
+// Fetch products from the backend when the page loads
+window.addEventListener('load', fetchProducts);
+
+async function fetchProducts() {
+    try {
+        const response = await fetch(`${config.apiUrl}/api/products`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const products = await response.json();
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Handle error appropriately, e.g., display an error message to the user
+    }
+}
 
 // Agregar producto al carrito
 function addToCart(productId, name, price) {
@@ -21,7 +39,7 @@ function updateCartTable() {
         const row = `
             <tr>
                 <td>${product.name}</td>
-                <td>${product.price.toFixed(2)}</td>
+                <td>${product.price}</td>
                 <td>${product.quantity}</td>
                 <td>${(product.price * product.quantity).toFixed(2)}</td>
             </tr>
@@ -33,7 +51,7 @@ function updateCartTable() {
 // Finalizar la venta
 async function finalizeSale() {
     try {
-        const response = await fetch('/sales', {
+        const response = await fetch(`${config.apiUrl}/api/sales`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ products: productsInCart })

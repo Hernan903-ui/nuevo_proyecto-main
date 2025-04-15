@@ -1,59 +1,47 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+import os
+from flask import Flask, jsonify, g
 from flask_cors import CORS
-import logging
-from flask_socketio import SocketIO
-from backend.utils.mail import init_mail
-from backend.extensions import db  # Mover la inicialización de db a un archivo separado
-from backend.database import init_database
-from flask import Flask, send_from_directory
+from extensions import db, mail, socketio, init_extensions
+from routes.auth_routes import auth_bp
+from routes.product_routes import product_bp
+from routes.stock_routes import stock_bp
+from routes.pos_routes import pos_bp
+from routes.report_routes import report_bp
+from routes.dashboard_routes import dashboard_bp
+from utils.mail import init_mail
+from database import create_engine_from_env, get_session
 
-# Configuración de Flask
-app = Flask(__name__, static_folder='frontend/public')
-
-# Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:hjb38u30@localhost/inventory_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Inicializar extensiones
-db.init_app(app)
-init_database(app)
-init_mail(app)
+app = Flask(__name__)
 CORS(app)
 
-# Inicializar Flask-SocketIO
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')  # Replace with a strong secret key
 
-# Configuración de logs
-logging.basicConfig(
-    filename='logs/app.log',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s'
-)
+# Initialize extensions
+init_extensions(app)
 
-# Registrar blueprints
-from backend.routes.auth_routes import auth_bp
-from backend.routes.product_routes import product_bp
-from backend.routes.stock_routes import stock_bp
-from backend.routes.report_routes import report_bp
-from backend.routes.pos_routes import pos_bp
-from routes.register import register_bp
+engine = create_engine_from_env()
 
-app.register_blueprint(auth_bp, url_prefix='/auth')
-app.register_blueprint(product_bp, url_prefix='/products')
-app.register_blueprint(stock_bp, url_prefix='/stock')
-app.register_blueprint(report_bp, url_prefix='/reports')
-app.register_blueprint(pos_bp, url_prefix='/pos')
-app.register_blueprint(register_bp, url_prefix='/register')
+@app.before_request
+def before_request():
+    g.db_engine = engine
+    g.db_session = get_session(engine)
 
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
+@app.teardown_request
+def teardown_request(exception=None):
+    if hasattr(g, 'db_session'):
+        g.db_session.close()
 
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory(app.static_folder, path)
+# Register blueprints
+app.register_blueprint(auth_bp)
+app.register_blueprint(product_bp)
+app.register_blueprint(stock_bp)
+app.register_blueprint(pos_bp)
+app.register_blueprint(report_bp)
+app.register_blueprint(dashboard_bp)
 
-# Iniciar servidor
+@app.route('/api/health/')
+def health_check():
+    return jsonify({'status': 'ok'}), 200
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run(debug=True)

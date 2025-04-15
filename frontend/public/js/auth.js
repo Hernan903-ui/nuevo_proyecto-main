@@ -1,15 +1,17 @@
 // auth.js
 
+import config from './config.js';
+
 // Función para iniciar sesión
 async function login(email, password) {
     try {
-        const response = await fetch('/auth/login', {
+        const response = await fetch(`${config.apiUrl}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
 
-        const data = await response.json();
+        const data = await response.json();        
         if (response.ok) {
             alert('Inicio de sesión exitoso');
             localStorage.setItem('token', data.token); // Guardar token

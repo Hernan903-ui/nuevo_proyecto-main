@@ -1,21 +1,31 @@
-import i18next from "i18next";
-import Backend from "i18next-http-backend";
-import LanguageDetector from "i18next-browser-languagedetector";
-import { initReactI18next } from "react-i18next";
-
-i18next
-  .use(Backend) // Carga los archivos JSON
-  .use(LanguageDetector) // Detecta el idioma del navegador
-  .use(initReactI18next) // Integración con React
-  .init({
-    fallbackLng: "en", // Idioma predeterminado
-    debug: true, // Activa logs para depuración
-    backend: {
-      loadPath: "/locales/{{lng}}.json", // Ruta a los archivos JSON
-    },
-    interpolation: {
-      escapeValue: false, // No escapar valores HTML
-    },
+const translations = {};
+async function loadTranslations(lang) {
+  const response = await fetch(`/locales/${lang}.json`);
+  translations[lang] = await response.json();
+}
+function translate(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.dataset.i18n;
+    element.textContent = translations[lang][key] || key;
   });
-
-export default i18next;
+}
+async function changeLanguage(lang){
+  await loadTranslations(lang);
+  translate(lang);
+  localStorage.setItem('language', lang);
+}
+function getCurrentLanguage() {
+  return localStorage.getItem('language') || navigator.language.split('-')[0] || 'en';
+}
+const languageSelector = document.getElementById('language-selector');
+if (languageSelector) {
+  languageSelector.addEventListener('change', (event) => {
+    changeLanguage(event.target.value);
+  });
+  const currentLanguage = getCurrentLanguage();
+  languageSelector.value = currentLanguage;
+  loadTranslations(currentLanguage).then(() => {
+    translate(currentLanguage);
+  });
+}
+export { loadTranslations, translate, changeLanguage, getCurrentLanguage };

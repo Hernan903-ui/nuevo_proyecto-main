@@ -7,14 +7,9 @@ host: "localhost:5000"
 schemes:
   - "http"
 paths:
-  /api/products:
-    get:
-      summary: "Obtener lista de productos"
-      responses:
-        200:
-          description: "Lista de productos obtenida correctamente"
+  /auth/register:
     post:
-      summary: "Crear un nuevo producto"
+      summary: "Registrar un nuevo usuario"
       parameters:
         - in: "body"
           name: "body"
@@ -24,7 +19,160 @@ paths:
             properties:
               name:
                 type: "string"
-                example: "Producto A"
+              email:
+                type: "string"
+              password:
+                type: "string"
+              business_name:
+                type: "string"
+      responses:
+        201:
+          description: "Usuario registrado exitosamente"
+        400:
+          description: "Datos inválidos"
+
+  /auth/login:
+    post:
+      summary: "Iniciar sesión"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "Inicio de sesión exitoso"
+          schema:
+            type: "object"
+            properties:
+              access_token:
+                type: "string"
+        401:
+          description: "Credenciales inválidas"
+
+  /auth/logout:
+    post:
+      summary: "Cerrar sesión"
+      responses:
+        200:
+          description: "Sesión cerrada"
+
+  /auth/reset-password:
+    post:
+      summary: "Restablecer contraseña"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              token:
+                type: "string"
+              new_password:
+                type: "string"
+      responses:
+        200:
+          description: "Contraseña restablecida exitosamente"
+        400:
+          description: "Token inválido o datos inválidos"
+
+  /products:
+    get:
+      summary: "Obtener lista de productos"
+      responses:
+        200:
+          description: "Lista de productos obtenida correctamente"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+    post:
+      summary: "Crear un nuevo producto"
+      security:
+        - Bearer: []
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
       responses:
         201:
           description: "Producto creado exitosamente"
+          schema:
+            $ref: "#/definitions/Product"
+
+  /products/{id}:
+    get:
+      summary: "Obtener un producto por ID"
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Producto obtenido correctamente"
+          schema:
+            $ref: "#/definitions/Product"
+        404:
+          description: "Producto no encontrado"
+
+  /reports/sales-analysis:
+    get:
+      summary: "Análisis de ventas"
+      responses:
+        200:
+          description: "Análisis de ventas obtenido"
+
+  /reports/most-sold:
+    get:
+      summary: "Productos más vendidos"
+      responses:
+        200:
+          description: "Productos más vendidos obtenidos"
+
+  /reports/most-profitable:
+    get:
+      summary: "Productos más rentables"
+      responses:
+        200:
+          description: "Productos más rentables obtenidos"
+
+  /reports/generate-pdf:
+    get:
+      summary: "Generar reporte en PDF"
+      responses:
+        200:
+          description: "PDF generado"
+          produces:
+            - "application/pdf"
+
+definitions:
+  Product:
+    type: "object"
+    required:
+      - name
+      - description
+      - price
+      - stock
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+      stock:
+        type: "integer"
+      business_name:
+        type: "string"

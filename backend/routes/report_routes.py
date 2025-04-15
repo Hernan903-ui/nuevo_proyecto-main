@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, send_file
-from backend.database_models import Product, StockHistory
+from database_models import Product, StockHistory, Sale
 from utils.pdf_generator import generate_pdf
-from database import db_session
-from sqlalchemy.sql import text
+from extensions import db
+from sqlalchemy import text
 
 report_bp = Blueprint('reports', __name__)
 
@@ -24,7 +24,7 @@ def generate_report_pdf():
     return send_file(filename, as_attachment=True)
 
 # Ruta para obtener los productos más vendidos
-@report_bp.route('/reports/most-sold', methods=['GET'])
+@report_bp.route('/most-sold', methods=['GET'])
 def most_sold_products():
     try:
         query = text("""
@@ -41,7 +41,7 @@ def most_sold_products():
                 total_sold DESC
             LIMIT 10
         """)
-        result = db_session.execute(query).fetchall()
+        result = db.session.execute(query).fetchall()
 
         most_sold = [{"product_name": row["product_name"], "total_sold": row["total_sold"]} for row in result]
         return jsonify(most_sold), 200
@@ -49,26 +49,25 @@ def most_sold_products():
         return jsonify({"error": str(e)}), 500
 
 # Ruta para obtener los productos más rentables
-@report_bp.route('/reports/most-profitable', methods=['GET'])
+@report_bp.route('/most-profitable', methods=['GET'])
 def most_profitable_products():
     try:
         query = text("""
             SELECT 
-                p.name AS product_name, 
-                SUM((s.sale_price - s.cost_price) * s.quantity) AS total_profit
+                p.name AS product_name,
+                SUM((s.sale_price - p.cost_price) * s.quantity) AS total_profit
             FROM 
                 sales s
             INNER JOIN 
-                products p ON s.product_id = p.id
+                product p ON s.product_id = p.id
             GROUP BY 
                 p.name
             ORDER BY 
                 total_profit DESC
             LIMIT 10
         """)
-        result = db_session.execute(query).fetchall()
+        result = db.session.execute(query).fetchall()
 
         most_profitable = [{"product_name": row["product_name"], "total_profit": row["total_profit"]} for row in result]
         return jsonify(most_profitable), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception as e:        return jsonify({"error": str(e)}), 500

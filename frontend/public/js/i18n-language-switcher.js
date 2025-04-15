@@ -1,7 +1,11 @@
-import i18next from "./i18n";
+import i18next from "i18next";
 
 document.addEventListener("DOMContentLoaded", () => {
   const languageSelector = document.getElementById("language-selector");
+
+  if (!languageSelector) {
+    return;
+  }
 
   // Cambiar idioma al seleccionar una opción
   languageSelector.addEventListener("change", (event) => {
@@ -9,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     i18next.changeLanguage(selectedLanguage, () => {
       updateContent();
     });
+  }, (err) => {
+    console.error("Error changing language:", err);
   });
 
   // Actualizar el contenido traducido

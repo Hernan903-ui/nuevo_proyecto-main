@@ -1,0 +1,10 @@
+flask
+flask-sqlalchemy
+flask-mail
+flask-socketio
+flask-cors
+mysqlclient
+pyjwt
+passlib
+python-dotenv
+requests

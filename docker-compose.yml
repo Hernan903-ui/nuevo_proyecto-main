@@ -8,7 +8,7 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - "3000:3000"
+      - "5000:5000"
     depends_on:
       - db
     networks:
@@ -18,7 +18,7 @@ services:
     build:
       context: ./frontend
     volumes:
-      - ./frontend/public:/usr/share/nginx/html
+      - ./frontend/public:/usr/share/nginx/html/public
     ports:
       - "8080:80"
     networks:

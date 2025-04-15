@@ -1,51 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/socket.js" defer></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="/js/dashboard.js" defer></script>
-    <img src="image.jpg" alt="Descripción" loading="lazy">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="/js/dashboard.js" defer></script>
+  <script src="/js/utils.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1 data-i18n="header.title">Welcome to the Dashboard</h1>
-        <p data-i18n="content.greeting">Hello, User!</p>
-        <h1>Dashboard</h1>
-        <nav>
-            <a href="/products.html">Productos</a>
-            <a href="/stock.html">Stock</a>
-            <a href="/analysis.html">Análisis</a>
-            <a href="/reports.html">Reportes</a>
-            <a href="/pos.html">POS</a>
-            <button onclick="logout()">Cerrar Sesión</button>
-        </nav>
-    </header>
-    <main>
-        <h2>Bienvenido al Dashboard</h2>
-    <p>Selecciona una opción del menú para comenzar.</p>
+  <header>
+    <h1 data-i18n="header.title">Welcome to the Dashboard</h1>
+    <select id="language-selector">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+  </header>
+  <nav>
+    <a href="/index.html">Inicio</a>
+    <a href="/products.html">Productos</a>
+    <a href="/stock.html">Stock</a>
+    <a href="/analysis.html">Análisis</a>
+    <a href="/reports.html">Reportes</a>
+    <a href="/pos.html">POS</a>
+  </nav>
+  <main>
+    <section>
+      <h1>Dashboard</h1>
+      <p>Selecciona una opción del menú para comenzar.</p>
+    </section>
 
-    <!-- Contenedores para los gráficos -->
-    <div id="total-sales-chart" style="width: 100%; height: 400px;"></div>
-    <div id="best-sellers-chart" style="width: 100%; height: 400px;"></div>
-    </main>
-    <div id="notifications"></div>
+    <section>
+      <div id="total-sales-chart" style="width: 100%; height: 400px;"></div>
+      <div id="best-sellers-chart" style="width: 100%; height: 400px;"></div>
+    </section>
+
+    <section id="admin-section">
+      <h2>Sección Administrativa</h2>
+      <button>Configurar Usuarios</button>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Sistema de Inventarios</p>
+  </footer>
 </body>
 </html>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const role = getRoleFromToken();
-        if (role !== 'admin') {
-            document.getElementById('admin-section').style.display = 'none';
-        }
-    });
-</script>
-
-<div id="admin-section">
-    <h2>Sección Administrativa</h2>
-    <button>Configurar Usuarios</button>
-</div>

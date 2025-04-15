@@ -1,14 +1,15 @@
-from flask import Blueprint, request, jsonify
-from backend.database_models import db, Product, Supplier
+import os
+from flask import Blueprint, request, jsonify, g
+from extensions import db
 
 product_bp = Blueprint('products', __name__)
 
 @product_bp.route('/', methods=['GET'])
 def get_products():
-    products = Product.query.all()
+    products = g.db_session.query(db.Product).all()
     return jsonify([{
         "id": p.id,
-        "barcode": p.barcode,
+        "code": p.code,
         "name": p.name,
         "cost_price": p.cost_price,
         "sale_price": p.sale_price,
@@ -21,16 +22,16 @@ def get_products():
 def add_product():
     data = request.json
     try:
-        new_product = Product(
-            barcode=data['barcode'],
+        new_product = db.Product(
+            code=data['code'],
             name=data['name'],
             cost_price=data['cost_price'],
             sale_price=data['sale_price'],
             stock=data['stock'],
             supplier_id=data['supplier_id']
         )
-        db.session.add(new_product)
-        db.session.commit()
+        g.db_session.add(new_product)
+        g.db_session.commit()
         return jsonify({"message": "Producto agregado con éxito"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -38,7 +39,7 @@ def add_product():
 @product_bp.route('/<int:id>', methods=['PUT'])
 def update_product(id):
     data = request.json
-    product = Product.query.get_or_404(id)
+    product = g.db_session.query(db.Product).get(id)
     try:
         product.name = data.get('name', product.name)
         product.cost_price = data.get('cost_price', product.cost_price)
@@ -46,8 +47,9 @@ def update_product(id):
         product.stock = data.get('stock', product.stock)
         product.supplier_id = data.get('supplier_id', product.supplier_id)
         db.session.commit()
-        return jsonify({"message": "Producto actualizado con éxito"}), 200
+        return jsonify({"message": "Producto actualizado con éxito" if product else "Producto no encontrado"}), 200 if product else 404
     except Exception as e:
+        g.db_session.rollback()
         return jsonify({"error": str(e)}), 400
 
 @product_bp.route('/<int:id>', methods=['DELETE'])

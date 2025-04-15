@@ -1,4 +1,5 @@
-from backend.extensions import db
+from extensions import db
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +12,7 @@ class User(db.Model):
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    barcode = db.Column(db.String(100), unique=True, nullable=False)
+    code = db.Column(db.String(100), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     cost_price = db.Column(db.Float, nullable=False)
     sale_price = db.Column(db.Float, nullable=False)

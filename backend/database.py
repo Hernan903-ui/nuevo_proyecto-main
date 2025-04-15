@@ -1,31 +1,24 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
+from extensions import db
 
-# Inicialización de la base de datos con SQLAlchemy
-db = SQLAlchemy()
 
-def init_database(app: Flask):
+def create_engine_from_env():
     """
-    Configura la base de datos con los parámetros del archivo de configuración Flask.
+    Crea una engine de SQLAlchemy usando variables de entorno.
     """
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:hjb38u30@localhost/inventory_db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    user = os.environ.get("DATABASE_USER")
+    password = os.environ.get("DATABASE_PASSWORD")
+    host = os.environ.get("DATABASE_HOST", "localhost")
+    db_name = os.environ.get("DATABASE_NAME", "inventory_db")
+    database_uri = f"mysql+pymysql://{user}:{password}@{host}/{db_name}"
+    engine = create_engine(database_uri)
+    return engine
     
-    # Inicializa la sesión de la base de datos
-    db.init_app(app)
-
-    # Crear tablas si no existen
-    with app.app_context():
-        db.create_all()
-        print("Tablas creadas exitosamente (si no existían).")
-
-# Alternativa para manejar sesiones manualmente (opcional)
-def create_scoped_session(database_uri):
+def get_session(engine):
     """
-    Crea una sesión controlada para manejar las conexiones manualmente.
+    Genera y retorna una sesión de base de datos.
     """
-    engine = create_engine(database_uri, convert_unicode=True)
-    session_factory = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-    return scoped_session(session_factory)
+    session = sessionmaker(bind=engine)()
+    return session

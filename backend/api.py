@@ -1,7 +1,6 @@
 from flask_restful import Api, Resource
 from flask import Flask, request, jsonify
-from .database_models import Product
-from .database_models import User
+from backend.database_models import Product
 from backend.database import db
 
 app = Flask(__name__)

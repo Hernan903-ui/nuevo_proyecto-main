@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app import db
-from backend.database_models import Product, StockHistory, Sale
+from extensions import db
+from database_models import Product, StockHistory, Sale
 
 pos_bp = Blueprint('pos', __name__)
 

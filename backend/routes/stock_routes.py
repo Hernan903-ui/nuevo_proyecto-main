@@ -1,36 +1,27 @@
-from flask import Blueprint, jsonify
-from backend.database_models import Product
 from flask import Blueprint, request, jsonify
-from flask_socketio import emit
-from backend.database_models import db, Stock
+from database_models import Product, StockHistory
+from extensions import db
 
 stock_bp = Blueprint('stock', __name__)
 
 @stock_bp.route('/low-stock', methods=['GET'])
 def low_stock_alert():
     low_stock_products = Product.query.filter(Product.stock < 10).all()
-    return jsonify([{
-        "id": p.id,
-        "name": p.name,
-        "stock": p.stock
-    } for p in low_stock_products])
+    return jsonify([{"id": p.id, "name": p.name, "stock": p.stock} for p in low_stock_products])
 
-@stock_bp.route('/update-stock', methods=['POST'])
-def update_stock():
+@stock_bp.route('/add-stock', methods=['POST'])
+def add_stock():
     data = request.json
-    stock_item = Stock.query.get(data['id'])
-    
-    if not stock_item:
-        return jsonify({"error": "Artículo no encontrado"}), 404
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
 
-    stock_item.quantity = data['quantity']
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    product.stock += quantity
+    stock_history = StockHistory(product_id=product_id, action='entry', quantity=quantity)
+    db.session.add(stock_history)
     db.session.commit()
 
-    # Emitir un evento de notificación
-    emit('stock_updated', {
-        "id": stock_item.id,
-        "name": stock_item.name,
-        "quantity": stock_item.quantity
-    }, broadcast=True)
-
-    return jsonify({"message": "Stock actualizado"}), 200
+    return jsonify({'message': 'Stock updated successfully'}), 200

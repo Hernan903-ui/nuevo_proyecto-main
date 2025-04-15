@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from functools import wraps
 import jwt
-from backend.database_models import User
+from database_models import User
 
 def role_required(required_role):
     def decorator(func):

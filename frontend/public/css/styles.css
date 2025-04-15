@@ -1,182 +1,152 @@
-/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+  margin: 0;
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0f0f0; /* Secondary */
 }
 
-header {
-    background-color: #007bff;
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
+.App > * {
+  margin-top: 20px;
 }
 
-nav {
-    margin-top: 0.5rem;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f0f0f0; /* Secondary */
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 1rem;
-    font-weight: bold;
+.header-container h1 {
+  color: #333; /* Text Color */
 }
 
-nav a:hover {
-    text-decoration: underline;
+.nav-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #5c67f3; /* Primary */
+  color: white;
+  font-weight: bold;
 }
 
-main {
-    padding: 2rem;
-    text-align: center;
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+.nav-container a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+}
+.nav-container a:hover {
+  background-color: #333;
 }
 
-/* Buttons */
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
+.products-container,
+.stock-container,
+.analysis-container,
+.reports-container,
+.pos-container {
+  padding: 20px;
 }
 
-button:hover {
-    background-color: #0056b3;
+.products-container table,
+.stock-container table,
+.pos-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-/* Forms */
-form {
-    max-width: 300px;
-    margin: 0 auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-form label {
-    text-align: left;
+@media (max-width: 768px) {
+  .products-container table,
+  .stock-container table,
+  .pos-container table {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .products-container th, .products-container td,
+  .stock-container th, .stock-container td,
+  .pos-container th, .pos-container td {
+    white-space: normal;
+  }
 }
 
-form input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
+.products-container th, .products-container td,
+.stock-container th, .stock-container td,
+.pos-container th, .pos-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
-form button {
-    width: 100%;
+.products-container th,
+.stock-container th,
+.pos-container th {
+  background-color: #f0f0f0; /* Secondary */
 }
 
-/* Tables */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 2rem;
-    background: white;
+.login-form-container,
+.register-form-container,
+.reset-password-form-container {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 0.8rem;
-    text-align: left;
+.login-form-container form,
+.register-form-container form,
+.reset-password-form-container form {
+  display: flex;
+  flex-direction: column;
 }
 
-table th {
-    background-color: #007bff;
-    color: white;
+@media (max-width: 768px) {
+  .login-form-container,
+  .register-form-container,
+  .reset-password-form-container {
+    max-width: 100%;
+    padding: 10px;
+  }
 }
 
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.login-form-container label,
+.register-form-container label,
+.reset-password-form-container label {
+  margin-bottom: 5px;
 }
 
-table tr:hover {
-    background-color: #f1f1f1;
+.login-form-container input,
+.register-form-container input,
+.reset-password-form-container input {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ddd; /* Border Color */
 }
 
-/* Charts */
-canvas {
-    margin: 2rem auto;
-    display: block;
-}
-
-/* Alerts */
-.alert {
-    margin: 1rem 0;
-    padding: 1rem;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1rem;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #ff9800;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
+/* Use primary color for buttons */
+.login-form-container button,
+.register-form-container button,
+.reset-password-form-container button,
+.products-container button,
+.stock-container button,
+.reports-container button,
+.pos-container button {
+  padding: 10px;
+  background-color: #5c67f3;
+  color: white;
+  border: none;
+  cursor: pointer;
 }

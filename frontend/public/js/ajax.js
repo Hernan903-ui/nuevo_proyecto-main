@@ -1,8 +1,10 @@
 // ajax.js
+import config from './config.js';
+import { showAlert } from './alerts.js';
 
 async function fetchProducts() {
-    try {
-        const response = await fetch("/api/products");
+  try {
+    const response = await fetch(`${config.apiUrl}/api/products`);
         if (!response.ok) {
             throw new Error("Error al obtener los productos.");
         }
@@ -19,7 +21,7 @@ async function fetchProducts() {
                 <td>${product.cost_price}</td>
                 <td>${product.sale_price}</td>
                 <td>${product.stock}</td>
-                <td><button onclick="deleteProduct(${product.id})">Eliminar</button></td>
+                <td><button class="delete-button" onclick="deleteProduct(${product.id})">Eliminar</button></td>
             `;
             tableBody.appendChild(row);
         });
@@ -30,7 +32,7 @@ async function fetchProducts() {
 
 async function deleteProduct(productId) {
     try {
-        const response = await fetch(`/api/products/${productId}`, { method: "DELETE" });
+        const response = await fetch(`${config.apiUrl}/api/products/${productId}`, { method: "DELETE" });
         if (!response.ok) {
             throw new Error("No se pudo eliminar el producto.");
         }
